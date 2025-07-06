@@ -1,5 +1,5 @@
 (function() {
-    function_0x9d3f() {
+    function _0x9d3f() {
         let keystrokes = [];
         let userActivity = { typing: false, submitted: false };
 
